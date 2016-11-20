@@ -1,29 +1,35 @@
-#include "D3dclass.h"
+////////////////////////////////////////////////////////////////////////////////
+// Filename: d3dclass.cpp
+////////////////////////////////////////////////////////////////////////////////
+#include "d3dclass.h"
 
-D3DClass::D3DClass(){
-	m_swapChain=0;
-	m_device=0;
+
+D3DClass::D3DClass()
+{
+	m_swapChain = 0;
+	m_device = 0;
 	m_deviceContext = 0;
 	m_renderTargetView = 0;
 	m_depthStencilBuffer = 0;
 	m_depthStencilState = 0;
 	m_depthStencilView = 0;
 	m_rasterState = 0;
-
-
-	
-
-
 }
 
-D3DClass::D3DClass(const D3DClass& other){
 
+D3DClass::D3DClass(const D3DClass& other)
+{
 }
-D3DClass::~D3DClass(){
+
+
+D3DClass::~D3DClass()
+{
 }
 
-bool D3DClass::Initialize(int screenWidth,int screenHeight,bool vsync,HWND hwnd,bool fullscreen,float screenDepth,float screenNear){
 
+bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen, 
+						  float screenDepth, float screenNear)
+{
 	HRESULT result;
 	IDXGIFactory* factory;
 	IDXGIAdapter* adapter;
@@ -42,48 +48,56 @@ bool D3DClass::Initialize(int screenWidth,int screenHeight,bool vsync,HWND hwnd,
 	D3D11_VIEWPORT viewport;
 	float fieldOfView, screenAspect;
 
-	m_vsync_enabled=vsync;
 
-	// DirectX 그래픽 인터페이스 팩토리를 만듭니다.
-	result=CreateDXGIFactory(__uuidof(IDXGIFactory),(void**)&factory);
-	if(FAILED(result)){
+
+
+	// Store the vsync setting.
+	m_vsync_enabled = vsync;
+
+	// Create a DirectX graphics interface factory.
+	result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
+	if(FAILED(result))
+	{
 		return false;
 	}
 
-	// 팩토리 객체를 사용하여 첫번째 그래픽 카드 인터페이스에 대한 아답터를 만듭니다.
-	result=factory->EnumAdapters(0,&adapter);
-	if(FAILED(result)){
+	// Use the factory to create an adapter for the primary graphics interface (video card).
+	result = factory->EnumAdapters(0, &adapter);
+	if(FAILED(result))
+	{
 		return false;
 	}
 
-	// 출력(모니터)에 대한 첫번째 아답터를 나열합니다.
-	result=adapter->EnumOutputs(0,&adapterOutput);
-	if(FAILED(result)){
+	// Enumerate the primary adapter output (monitor).
+	result = adapter->EnumOutputs(0, &adapterOutput);
+	if(FAILED(result))
+	{
 		return false;
 	}
 
-	// DXGI_FORMAT_R8G8B8A8_UNORM 모니터 출력 디스플레이 포맷에 맞는 모드의 개수를 구합니다.
+	// Get the number of modes that fit the DXGI_FORMAT_R8G8B8A8_UNORM display format for the adapter output (monitor).
 	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
+	// Create a list to hold all the possible display modes for this monitor/video card combination.
 	displayModeList = new DXGI_MODE_DESC[numModes];
-	if(!displayModeList){
+	if(!displayModeList)
+	{
 		return false;
 	}
 
-	// 디스플레이 모드에 대한 리스트 구조를 채워넣습니다.
-	result=adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED,&numModes,displayModeList);
+	// Now fill the display mode list structures.
+	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
 	if(FAILED(result))
 	{
 		return false;
 	}
-	
 
-	// 이제 모든 디스플레이 모드에 대해 화면 너비/높이에 맞는 디스플레이 모드를 찾습니다.
-	// 적합한 것을 찾으면 모니터의 새로고침 비율의 분모와 분자 값을 저장합니다.
+	// Now go through all the display modes and find the one that matches the screen width and height.
+	// When a match is found store the numerator and denominator of the refresh rate for that monitor.
 	for(i=0; i<numModes; i++)
 	{
 		if(displayModeList[i].Width == (unsigned int)screenWidth)
@@ -94,129 +108,129 @@ bool D3DClass::Initialize(int screenWidth,int screenHeight,bool vsync,HWND hwnd,
 				denominator = displayModeList[i].RefreshRate.Denominator;
 			}
 		}
-
 	}
 
-
-	// 아답터(그래픽카드)의 description을 가져옵니다.
-	result=adapter->GetDesc(&adapterDesc);
-	if(FAILED(result)){
+	// Get the adapter (video card) description.
+	result = adapter->GetDesc(&adapterDesc);
+	if(FAILED(result))
+	{
 		return false;
 	}
 
-	// 현재 그래픽카드의 메모리 용량을 메가바이트 단위로 저장합니다.
-	m_videoCardMemory=(int)(adapterDesc.DedicatedVideoMemory/1024/1024);
+	// Store the dedicated video card memory in megabytes.
+	m_videoCardMemory = (int)(adapterDesc.DedicatedVideoMemory / 1024 / 1024);
 
-	// 그래픽카드의 이름을 char형 문자열 배열로 바꾼 뒤 저장합니다.
-	error=wcstombs_s(&stringLength,m_videoCardDescription,128,adapterDesc.Description,128);
-
-	if(error!=0){
+	// Convert the name of the video card to a character array and store it.
+	error = wcstombs_s(&stringLength, m_videoCardDescription, 128, adapterDesc.Description, 128);
+	if(error != 0)
+	{
 		return false;
 	}
 
-	//이제 정보(새로고침 비율과 그래픽카드 정보)를 가지고 있기 때문에 정보를 얻기 위해 사용한 구조체와 인터페이스를 토사구팽시킨다
-	delete[] displayModeList;
-	displayModeList=0;
+	// Release the display mode list.
+	delete [] displayModeList;
+	displayModeList = 0;
 
+	// Release the adapter output.
 	adapterOutput->Release();
-	adapterOutput=0;
+	adapterOutput = 0;
 
+	// Release the adapter.
 	adapter->Release();
-	adapter=0;
+	adapter = 0;
 
+	// Release the factory.
 	factory->Release();
-	factory=0;
+	factory = 0;
 
-	// 스왑 체인 description을 초기화합니다.
-	ZeroMemory(&swapChainDesc,sizeof(swapChainDesc));
+	// Initialize the swap chain description.
+    ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
 
-	//하나의 백버퍼만을 사용하도록 합니다
-	swapChainDesc.BufferCount=1;
-	
-	//백버퍼의 너비와 높이를 설정
-	swapChainDesc.BufferDesc.Width=screenWidth;
-	swapChainDesc.BufferDesc.Height=screenHeight;
+	// Set to a single back buffer.
+    swapChainDesc.BufferCount = 1;
 
-	//백버퍼로 일반적인 32bit의 서페이스를 지정합니다...
-	swapChainDesc.BufferDesc.Format=DXGI_FORMAT_R8G8B8A8_UNORM;
+	// Set the width and height of the back buffer.
+    swapChainDesc.BufferDesc.Width = screenWidth;
+    swapChainDesc.BufferDesc.Height = screenHeight;
 
-	//시스템에 맞춰서
+	// Set regular 32-bit surface for the back buffer.
+    swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	// Set the refresh rate of the back buffer.
 	if(m_vsync_enabled)
 	{
-		
-		swapChainDesc.BufferDesc.RefreshRate.Denominator=denominator;
-		swapChainDesc.BufferDesc.RefreshRate.Numerator=numerator;
+	    swapChainDesc.BufferDesc.RefreshRate.Numerator = numerator;
+		swapChainDesc.BufferDesc.RefreshRate.Denominator = denominator;
 	}
-	//무조건 빠르게
 	else
 	{
-		swapChainDesc.BufferDesc.RefreshRate.Numerator=0;
-		swapChainDesc.BufferDesc.RefreshRate.Denominator=1;
+	    swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
+		swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	}
 
-	// 백버퍼의 용도를 설정합니다.
-	swapChainDesc.BufferUsage=DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	// Set the usage of the back buffer.
+    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 
-	//렌더링이 이루어질 윈도우의 핸들 설정
-	swapChainDesc.OutputWindow=hwnd;
+	// Set the handle for the window to render to.
+    swapChainDesc.OutputWindow = hwnd;
 
-	//멀티 샘플링을 끕니다.
-	swapChainDesc.SampleDesc.Count=1;
-	swapChainDesc.SampleDesc.Quality=0;
+	// Turn multisampling off.
+    swapChainDesc.SampleDesc.Count = 1;
+    swapChainDesc.SampleDesc.Quality = 0;
 
-
-	// 윈도우 모드 또는 풀스크린 모드를 설정합니다.
+	// Set to full screen or windowed mode.
 	if(fullscreen)
 	{
-		swapChainDesc.Windowed=false;
+		swapChainDesc.Windowed = false;
 	}
 	else
 	{
-		swapChainDesc.Windowed=true;
+		swapChainDesc.Windowed = true;
 	}
 
-	// 스캔라인의 정렬과 스캔라이닝을 지정되지 않음으로(unspecified) 설정합니다.
-	swapChainDesc.BufferDesc.ScanlineOrdering=DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	swapChainDesc.BufferDesc.Scaling=DXGI_MODE_SCALING_UNSPECIFIED;
+	// Set the scan line ordering and scaling to unspecified.
+	swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-	// 출력된 이후의 백버퍼의 내용을 버리도록 합니다.
-	swapChainDesc.SwapEffect=DXGI_SWAP_EFFECT_DISCARD;
+	// Discard the back buffer contents after presenting.
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-	// 추가 옵션 플래그를 사용하지 않습니다.
-	swapChainDesc.Flags=0;
+	// Don't set the advanced flags.
+	swapChainDesc.Flags = 0;
 
-	//피쳐레벨을 11로 설정
-	featureLevel =D3D_FEATURE_LEVEL_11_0;
+	// Set the feature level to DirectX 11.
+	featureLevel = D3D_FEATURE_LEVEL_11_0;
 
-	// 스왑 체인, Direct3D 디바이스, Direct3D 디바이스 컨텍스트를 생성합니다.
-	result=D3D11CreateDeviceAndSwapChain(NULL,D3D_DRIVER_TYPE_HARDWARE,NULL,0,&featureLevel,1,D3D11_SDK_VERSION,&swapChainDesc,&m_swapChain,&m_device,NULL,&m_deviceContext);
-
-	if(FAILED(result)){
+	// Create the swap chain, Direct3D device, and Direct3D device context.
+	result = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &featureLevel, 1, 
+										   D3D11_SDK_VERSION, &swapChainDesc, &m_swapChain, &m_device, NULL, &m_deviceContext);
+	if(FAILED(result))
+	{
 		return false;
 	}
 
-	// 백버퍼의 포인터를 가져옵니다.
+	// Get the pointer to the back buffer.
 	result = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBufferPtr);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
-	// 백버퍼의 포인터로 렌더타겟 뷰를 생성합니다. 백버퍼를 스왑 체인에 연결합니다.
+	// Create the render target view with the back buffer pointer.
 	result = m_device->CreateRenderTargetView(backBufferPtr, NULL, &m_renderTargetView);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
-	// 백버퍼 포인터를 더이상 사용하지 않으므로 할당 해제합니다.
+	// Release pointer to the back buffer as we no longer need it.
 	backBufferPtr->Release();
-	backBufferPtr=0;
+	backBufferPtr = 0;
 
-	// 깊이 버퍼의 description을 초기화합니다.
-	ZeroMemory(&depthBufferDesc,sizeof(depthBufferDesc));
+	// Initialize the description of the depth buffer.
+	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
 
-	// 깊이 버퍼의 description(상제 정보?)을 작성합니다.
+	// Set up the description of the depth buffer.
 	depthBufferDesc.Width = screenWidth;
 	depthBufferDesc.Height = screenHeight;
 	depthBufferDesc.MipLevels = 1;
@@ -229,15 +243,17 @@ bool D3DClass::Initialize(int screenWidth,int screenHeight,bool vsync,HWND hwnd,
 	depthBufferDesc.CPUAccessFlags = 0;
 	depthBufferDesc.MiscFlags = 0;
 
-	//description을 사용하여 깊이 버퍼의 텍스쳐를 생성합니다.
-	result=m_device->CreateTexture2D(&depthBufferDesc,NULL,&m_depthStencilBuffer);
-	if(FAILED(result)){
+	// Create the texture for the depth buffer using the filled out description.
+	result = m_device->CreateTexture2D(&depthBufferDesc, NULL, &m_depthStencilBuffer);
+	if(FAILED(result))
+	{
 		return false;
 	}
 
-	ZeroMemory(&depthStencilDesc,sizeof(depthStencilDesc));
+	// Initialize the description of the stencil state.
+	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
 
-	// 스텐실 상태의 description을 작성합니다.
+	// Set up the description of the stencil state.
 	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
@@ -258,36 +274,35 @@ bool D3DClass::Initialize(int screenWidth,int screenHeight,bool vsync,HWND hwnd,
 	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-	// 깊이-스텐실 상태를 생성합니다.
-	result=m_device->CreateDepthStencilState(&depthStencilDesc,&m_depthStencilState);
+	// Create the depth stencil state.
+	result = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
-	// 깊이-스텐실 상태를 설정합니다.
-	m_deviceContext->OMSetDepthStencilState(m_depthStencilState,1);
+	// Set the depth stencil state.
+	m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
 
-	// 깊이-스텐실 뷰의 description을 초기화합니다.
+	// Initialize the depth stencil view.
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 
-	// 깊이-스텐실 뷰의 description을 작성합니다.
+	// Set up the depth stencil view description.
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-	// 깊이-스텐실 뷰를 생성합니다.
+	// Create the depth stencil view.
 	result = m_device->CreateDepthStencilView(m_depthStencilBuffer, &depthStencilViewDesc, &m_depthStencilView);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
-	// 렌더타겟 뷰와 깊이-스텐실 버퍼를 각각 출력 파이프라인에 바인딩합니다.
+	// Bind the render target view and depth stencil buffer to the output render pipeline.
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
-
-	// 어떤 도형을 어떻게 그릴 것인지 결정하는 래스터화기 description을 작성합니다.
+	// Setup the raster description which will determine how and what polygons will be drawn.
 	rasterDesc.AntialiasedLineEnable = false;
 	rasterDesc.CullMode = D3D11_CULL_BACK;
 	rasterDesc.DepthBias = 0;
@@ -299,45 +314,47 @@ bool D3DClass::Initialize(int screenWidth,int screenHeight,bool vsync,HWND hwnd,
 	rasterDesc.ScissorEnable = false;
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 
-	// 작성한 description으로부터 래스터화기 상태를 생성합니다.
-	result=m_device->CreateRasterizerState(&rasterDesc,&m_rasterState);
+	// Create the rasterizer state from the description we just filled out.
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterState);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
-	// 래스터화기 상태를 설정합니다.
+	// Now set the rasterizer state.
 	m_deviceContext->RSSetState(m_rasterState);
+	
+	// Setup the viewport for rendering.
+    viewport.Width = (float)screenWidth;
+    viewport.Height = (float)screenHeight;
+    viewport.MinDepth = 0.0f;
+    viewport.MaxDepth = 1.0f;
+    viewport.TopLeftX = 0.0f;
+    viewport.TopLeftY = 0.0f;
 
-	// 렌더링을 위한 뷰포트를 설정합니다.
-	viewport.Width = (float)screenWidth;
-	viewport.Height = (float)screenHeight;
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
-	viewport.TopLeftX = 0.0f;
-	viewport.TopLeftY = 0.0f;
+	// Create the viewport.
+    m_deviceContext->RSSetViewports(1, &viewport);
 
-	m_deviceContext->RSSetViewports(1,&viewport);
-
-	fieldOfView = (float)XM_PI / 4.0f;
+	// Setup the projection matrix.
+	fieldOfView = (float)D3DX_PI / 4.0f;
 	screenAspect = (float)screenWidth / (float)screenHeight;
 
-	// 3D 렌더링을 위한 투영 행렬을 생성합니다.
-	m_projectionMatrix=&XMMatrixPerspectiveFovLH(fieldOfView,screenAspect,screenNear,screenDepth);
-	
-	//// 월드 행렬을 단위 행렬로 초기화합니다.
-	m_worldMatrix=&XMMatrixIdentity();
+	// Create the projection matrix for 3D rendering.
+	D3DXMatrixPerspectiveFovLH(&m_projectionMatrix, fieldOfView, screenAspect, screenNear, screenDepth);
 
-	//// 2D 렌더링에 사용될 직교 행렬을 생성합니다
-	m_orthoMatrix=&XMMatrixOrthographicLH((float)screenWidth,(float)screenHeight,screenNear,screenDepth);
-	
-	return true;
-	
+    // Initialize the world matrix to the identity matrix.
+    D3DXMatrixIdentity(&m_worldMatrix);
+
+	// Create an orthographic projection matrix for 2D rendering.
+	D3DXMatrixOrthoLH(&m_orthoMatrix, (float)screenWidth, (float)screenHeight, screenNear, screenDepth);
+
+    return true;
 }
+
 
 void D3DClass::Shutdown()
 {
-	// 종료하기 전에 이렇게 윈도우 모드로 바꾸지 않으면 스왑체인을 할당 해제할 때 예외가 발생합니다.
+	// Before shutting down set to windowed mode or when you release the swap chain it will throw an exception.
 	if(m_swapChain)
 	{
 		m_swapChain->SetFullscreenState(false, NULL);
@@ -394,21 +411,22 @@ void D3DClass::Shutdown()
 	return;
 }
 
+
 void D3DClass::BeginScene(float red, float green, float blue, float alpha)
 {
 	float color[4];
 
 
-	// 버퍼를 어떤 색상으로 지울 것인지 설정합니다.
+	// Setup the color to clear the buffer to.
 	color[0] = red;
 	color[1] = green;
 	color[2] = blue;
 	color[3] = alpha;
 
-	// 백버퍼의 내용을 지웁니다.
+	// Clear the back buffer.
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, color);
     
-	// 깊이 버퍼를 지웁니다.
+	// Clear the depth buffer.
 	m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 	return;
@@ -417,20 +435,21 @@ void D3DClass::BeginScene(float red, float green, float blue, float alpha)
 
 void D3DClass::EndScene()
 {
-	// 렌더링이 완료되었으므로 백버퍼의 내용을 화면에 표시합니다.
+	// Present the back buffer to the screen since rendering is complete.
 	if(m_vsync_enabled)
 	{
-		// 새로고침 비율을 고정합니다.
+		// Lock to screen refresh rate.
 		m_swapChain->Present(1, 0);
 	}
 	else
 	{
-		// 가능한 한 빠르게 표시합니다.
+		// Present as fast as possible.
 		m_swapChain->Present(0, 0);
 	}
 
 	return;
 }
+
 
 ID3D11Device* D3DClass::GetDevice()
 {
@@ -443,25 +462,27 @@ ID3D11DeviceContext* D3DClass::GetDeviceContext()
 	return m_deviceContext;
 }
 
-XMMATRIX D3DClass::GetProjectionMatrix()
+
+void D3DClass::GetProjectionMatrix(D3DXMATRIX& projectionMatrix)
 {
-	
-	return *m_projectionMatrix;
+	projectionMatrix = m_projectionMatrix;
+	return;
 }
 
 
-XMMATRIX D3DClass::GetWorldMatrix()
+void D3DClass::GetWorldMatrix(D3DXMATRIX& worldMatrix)
 {
-	
-	return *m_worldMatrix;
+	worldMatrix = m_worldMatrix;
+	return;
 }
 
 
-XMMATRIX D3DClass::GetOrthoMatrix()
+void D3DClass::GetOrthoMatrix(D3DXMATRIX& orthoMatrix)
 {
-	
-	return *m_orthoMatrix;
+	orthoMatrix = m_orthoMatrix;
+	return;
 }
+
 
 void D3DClass::GetVideoCardInfo(char* cardName, int& memory)
 {

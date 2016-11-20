@@ -1,32 +1,45 @@
-#include "Graphicsclass.h"
+////////////////////////////////////////////////////////////////////////////////
+// Filename: graphicsclass.cpp
+////////////////////////////////////////////////////////////////////////////////
+#include "graphicsclass.h"
 
-Graphicsclass::Graphicsclass(){
-	m_D3D=0;
+
+GraphicsClass::GraphicsClass()
+{
+	m_D3D = 0;
 	m_Camera = 0;
 	m_Model = 0;
 	m_ColorShader = 0;
 }
-Graphicsclass::Graphicsclass(const Graphicsclass& other){
-}
-Graphicsclass::~Graphicsclass(){
+
+
+GraphicsClass::GraphicsClass(const GraphicsClass& other)
+{
 }
 
-bool Graphicsclass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
+
+GraphicsClass::~GraphicsClass()
 {
-	
+}
+
+
+bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
+{
 	bool result;
 
-	// Create the Direct3D object.
-	m_D3D=new D3DClass;
 
+	// Create the Direct3D object.
+	m_D3D = new D3DClass;
 	if(!m_D3D)
 	{
 		return false;
 	}
 
-	result=m_D3D->Initialize(screenWidth,screenHeight,VSYNC_ENABLED,hwnd,FULL_SCREEN,SCREEN_DEPTH,SCREEN_NEAR);
+	// Initialize the Direct3D object.
+	result = m_D3D->Initialize(screenWidth, screenHeight, VSYNC_ENABLED, hwnd, FULL_SCREEN, SCREEN_DEPTH, SCREEN_NEAR);
 	if(!result)
 	{
+		MessageBox(hwnd, L"Could not initialize Direct3D.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -39,7 +52,7 @@ bool Graphicsclass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	// Set the initial position of the camera.
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
-
+	
 	// Create the model object.
 	m_Model = new ModelClass;
 	if(!m_Model)
@@ -70,18 +83,18 @@ bool Graphicsclass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-
 	return true;
 }
 
-void Graphicsclass::Shutdown()
+
+void GraphicsClass::Shutdown()
 {
-	// Release the D3D object.
-	if(m_D3D)
+	// Release the color shader object.
+	if(m_ColorShader)
 	{
-		m_D3D->Shutdown();
-		delete m_D3D;
-		m_D3D = 0;
+		m_ColorShader->Shutdown();
+		delete m_ColorShader;
+		m_ColorShader = 0;
 	}
 
 	// Release the model object.
@@ -99,26 +112,24 @@ void Graphicsclass::Shutdown()
 		m_Camera = 0;
 	}
 
-	// Release the color shader object.
-	if(m_ColorShader)
+	// Release the D3D object.
+	if(m_D3D)
 	{
-		m_ColorShader->Shutdown();
-		delete m_ColorShader;
-		m_ColorShader = 0;
+		m_D3D->Shutdown();
+		delete m_D3D;
+		m_D3D = 0;
 	}
-
 
 	return;
 }
 
 
-bool Graphicsclass::Frame()
+bool GraphicsClass::Frame()
 {
 	bool result;
 
 
-	// 그래픽 렌더링을 수행합니다.
-
+	// Render the graphics scene.
 	result = Render();
 	if(!result)
 	{
@@ -129,34 +140,22 @@ bool Graphicsclass::Frame()
 }
 
 
-bool Graphicsclass::Render()
+bool GraphicsClass::Render()
 {
-	XMMATRIX worldMatrix(1.0f, 0.0f, 0.0f, 0.0f,
-						 0.0f, 1.0f, 0.0f, 0.0f,
-						 0.0f, 0.0f, 1.0f, 0.0f,
-						 0.0f, 0.0f, 0.0f, 1.0f);
-
-	XMMATRIX projectionMatrix(1.80947561f, 0.0f, 0.0f, 0.0f,
-							  0.0f, 2.41421342f, 0.0f, 0.0f,
-							  0.0f, 0.0f, 1.00010002f, 0.0f,
-							  0.0f, 0.0f, -0.100010000f, 0.0f);
-	XMMATRIX viewMatrix;
+	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix;
 	bool result;
 
-	 //씬 그리기를 시작하기 위해 버퍼의 내용을 지웁니다.
+
+	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-
+	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
 
 	// Get the world, view, and projection matrices from the camera and d3d objects.
-	//value copy로 바꿈
-	//worldMatrix = m_D3D->GetWorldMatrix(); 
-	//projectionMatrix = m_D3D->GetProjectionMatrix();
-	viewMatrix=m_Camera->GetViewMatrix();
-	
-
-
+	m_Camera->GetViewMatrix(viewMatrix);
+	m_D3D->GetWorldMatrix(worldMatrix);
+	m_D3D->GetProjectionMatrix(projectionMatrix);
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_D3D->GetDeviceContext());
@@ -168,9 +167,8 @@ bool Graphicsclass::Render()
 		return false;
 	}
 
-	// 버퍼에 그려진 씬을 화면에 표시합니다.
+	// Present the rendered scene to the screen.
 	m_D3D->EndScene();
-
 
 	return true;
 }

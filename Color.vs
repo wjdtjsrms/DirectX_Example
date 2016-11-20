@@ -1,10 +1,22 @@
+////////////////////////////////////////////////////////////////////////////////
+// Filename: color.vs
+////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////
+// GLOBALS //
+/////////////
 cbuffer MatrixBuffer
 {
-    matrix worldMatrix;
-    matrix viewMatrix;
-    matrix projectionMatrix;
+	matrix worldMatrix;
+	matrix viewMatrix;
+	matrix projectionMatrix;
 };
 
+
+//////////////
+// TYPEDEFS //
+//////////////
 struct VertexInputType
 {
     float4 position : POSITION;
@@ -18,20 +30,23 @@ struct PixelInputType
 };
 
 
+////////////////////////////////////////////////////////////////////////////////
+// Vertex Shader
+////////////////////////////////////////////////////////////////////////////////
 PixelInputType ColorVertexShader(VertexInputType input)
 {
     PixelInputType output;
     
 
-	// 올바르게 행렬 연산을 하기 위하여 position 벡터를 w까지 있는 4성분이 있는 것으로 사용합니다.
+	// Change the position vector to be 4 units for proper matrix calculations.
     input.position.w = 1.0f;
 
-	// 정점의 위치를 월드, 뷰, 사영의 순으로 계산합니다.
+	// Calculate the position of the vertex against the world, view, and projection matrices.
     output.position = mul(input.position, worldMatrix);
     output.position = mul(output.position, viewMatrix);
     output.position = mul(output.position, projectionMatrix);
     
-	// 픽셀 셰이더에서 사용하기 위해 입력 색상을 저장합니다.
+	// Store the input color for the pixel shader to use.
     output.color = input.color;
     
     return output;
