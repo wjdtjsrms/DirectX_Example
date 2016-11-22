@@ -81,26 +81,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cameraclass.cpp" />
-    <ClCompile Include="Colorshaderclass.cpp" />
+    <ClCompile Include="Textureshaderclass.cpp" />
     <ClCompile Include="D3dclass.cpp" />
     <ClCompile Include="Graphicsclass.cpp" />
     <ClCompile Include="Inputclass.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Modelclass.cpp" />
     <ClCompile Include="Systemclass.cpp" />
+    <ClCompile Include="Textureclass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cameraclass.h" />
-    <ClInclude Include="Colorshaderclass.h" />
+    <ClInclude Include="Textureshaderclass.h" />
     <ClInclude Include="D3dclass.h" />
     <ClInclude Include="Graphicsclass.h" />
     <ClInclude Include="Inputclass.h" />
     <ClInclude Include="Modelclass.h" />
     <ClInclude Include="SystemClass.h" />
+    <ClInclude Include="Textureclass.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Color.ps" />
-    <None Include="Color.vs" />
+    <None Include="C:\Users\정선근\Desktop\seafloar.dds" />
+    <None Include="Texture.ps" />
+    <None Include="Texture.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
