@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: colorshaderclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
-#include "Textureshaderclass.h"
+#include "../Header_file/Textureshaderclass.h"
 
 
 Textureshaderclass::Textureshaderclass()
@@ -30,7 +30,7 @@ bool Textureshaderclass::Initialize(ID3D11Device* device, HWND hwnd)
 
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"Texture.vs", L"Texture.ps");
+	result = InitializeShader(device, hwnd, L"Shader_code/Texture.vs", L"Shader_code/Texture.ps");
 	if(!result)
 	{
 		return false;

@@ -10,6 +10,32 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\seafloar.dds" />
+    <None Include="Shader_code\Texture.ps" />
+    <None Include="Shader_code\Texture.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source_code\cameraclass.cpp" />
+    <ClCompile Include="Source_code\D3dclass.cpp" />
+    <ClCompile Include="Source_code\Graphicsclass.cpp" />
+    <ClCompile Include="Source_code\Inputclass.cpp" />
+    <ClCompile Include="Source_code\Main.cpp" />
+    <ClCompile Include="Source_code\Modelclass.cpp" />
+    <ClCompile Include="Source_code\Systemclass.cpp" />
+    <ClCompile Include="Source_code\Textureclass.cpp" />
+    <ClCompile Include="Source_code\Textureshaderclass.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Header_file\Cameraclass.h" />
+    <ClInclude Include="Header_file\D3dclass.h" />
+    <ClInclude Include="Header_file\Graphicsclass.h" />
+    <ClInclude Include="Header_file\Inputclass.h" />
+    <ClInclude Include="Header_file\Modelclass.h" />
+    <ClInclude Include="Header_file\SystemClass.h" />
+    <ClInclude Include="Header_file\Textureclass.h" />
+    <ClInclude Include="Header_file\Textureshaderclass.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ADA8CA52-3BB9-4338-8479-A5C174BF34B8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -79,32 +105,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="cameraclass.cpp" />
-    <ClCompile Include="Textureshaderclass.cpp" />
-    <ClCompile Include="D3dclass.cpp" />
-    <ClCompile Include="Graphicsclass.cpp" />
-    <ClCompile Include="Inputclass.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Modelclass.cpp" />
-    <ClCompile Include="Systemclass.cpp" />
-    <ClCompile Include="Textureclass.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Cameraclass.h" />
-    <ClInclude Include="Textureshaderclass.h" />
-    <ClInclude Include="D3dclass.h" />
-    <ClInclude Include="Graphicsclass.h" />
-    <ClInclude Include="Inputclass.h" />
-    <ClInclude Include="Modelclass.h" />
-    <ClInclude Include="SystemClass.h" />
-    <ClInclude Include="Textureclass.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="C:\Users\정선근\Desktop\seafloar.dds" />
-    <None Include="Texture.ps" />
-    <None Include="Texture.vs" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
