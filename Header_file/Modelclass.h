@@ -24,6 +24,7 @@ private:
 	{
 		XMFLOAT3 position;
 	    XMFLOAT2 color;
+		XMFLOAT3 normal;
 	};
 
 public:

@@ -86,10 +86,10 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 
 	// Set the number of vertices in the vertex array.
-	m_vertexCount = 3;
+	m_vertexCount = 6;
 
 	// Set the number of indices in the index array.
-	m_indexCount = 3;
+	m_indexCount = 6;
 
 	// Create the vertex array.
 	vertices = new VertexType[m_vertexCount];
@@ -108,19 +108,37 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	// Load the vertex array with data.
 	vertices[0].position = XMFLOAT3(-1.0f, -1.0f, 0.0f);  // Bottom left.
 	vertices[0].color = XMFLOAT2(0.0f, 1.0f);
+	vertices[0].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 
-	vertices[1].position = XMFLOAT3(0.0f, 1.0f, 0.0f);  // Top middle
-	vertices[1].color = XMFLOAT2(0.5f, 0.0f);
+	vertices[1].position = XMFLOAT3(-1.0f, 1.0f, 0.0f);  // Top middle
+	vertices[1].color = XMFLOAT2(0.0f, 0.0f);
+	vertices[1].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 
-	vertices[2].position = XMFLOAT3(1.0f, -1.0f, 0.0f);  // Bottom right.
-	vertices[2].color = XMFLOAT2(1.0f, 1.0f);
+	vertices[2].position = XMFLOAT3(1.0f, 1.0f, 0.0f);  // Bottom right.
+	vertices[2].color = XMFLOAT2(1.0f, 0.0f);
+	vertices[2].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+
+	vertices[3].position = XMFLOAT3(1.0f, 1.0f, 0.0f);  // Bottom right.
+	vertices[3].color = XMFLOAT2(1.0f, 0.0f);
+	vertices[3].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+
+	vertices[4].position = XMFLOAT3(1.0f, -1.0f, 0.0f);  // Bottom right.
+	vertices[4].color = XMFLOAT2(1.0f, 1.0f);
+	vertices[4].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+
+	vertices[5].position = XMFLOAT3(-1.0f, -1.0f, 0.0f);  // Bottom right.
+	vertices[5].color = XMFLOAT2(0.0f, 1.0f);
+	vertices[5].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 
 
 
 	// Load the index array with data.
-	indices[0] = 0;  // Bottom left.
-	indices[1] = 1;  // Bottom left.
-	indices[2] = 2;  // Top middle.
+	for (int i = 0; i < m_indexCount; i++)
+	{
+		indices[i] = i;  
+
+	}
+
 	
 
 	// Set up the description of the static vertex buffer.
