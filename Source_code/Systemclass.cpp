@@ -8,6 +8,9 @@ SystemClass::SystemClass()
 {
 	m_Input = 0;
 	m_Graphics = 0;
+	x = 0;
+	y = 0;
+	
 }
 
 
@@ -140,7 +143,7 @@ bool SystemClass::Frame()
 	}
 
 	// Do the frame processing for the graphics object.
-	result = m_Graphics->Frame();
+	result = m_Graphics->Frame(x,y);
 	if(!result)
 	{
 		return false;
@@ -193,7 +196,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	m_hinstance = GetModuleHandle(NULL);
 
 	// Give the application a name.
-	m_applicationName = L"Engine";
+	m_applicationName = L"Engine_Test";
 
 	// Setup the windows class with default settings.
 	wc.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -246,7 +249,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 
 	// Create the window with the screen settings and get the handle to it.
 	m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, m_applicationName, m_applicationName, 
-						    WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
+						    WS_OVERLAPPEDWINDOW,
 						    posX, posY, screenWidth, screenHeight, NULL, NULL, m_hinstance, NULL);
 
 	// Bring the window up on the screen and set it as main focus.
@@ -255,8 +258,8 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	SetFocus(m_hwnd);
 
 	// Hide the mouse cursor.
-	ShowCursor(false);
-
+	ShowCursor(true);
+	
 	return;
 }
 
@@ -289,6 +292,10 @@ void SystemClass::ShutdownWindows()
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 {
+	HDC hdc;
+
+	static BOOL bNowDraw = false;
+
 	switch(umessage)
 	{
 		// Check if the window is being destroyed.
@@ -304,7 +311,32 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 			PostQuitMessage(0);		
 			return 0;
 		}
+		case WM_LBUTTONDOWN:
+		{
+			x = (int)(short)LOWORD(lparam);
+			y = (int)(short)HIWORD(lparam);
+			
+			bNowDraw = TRUE;
+			return 0;
+		}
+		case WM_MOUSEMOVE:
+		{
+			if (bNowDraw){
+				hdc = GetDC(hwnd);
+				MoveToEx(hdc, x, y, NULL);
+				x = (int)(short)LOWORD(lparam);
+				y = (int)(short)HIWORD(lparam);
+				ReleaseDC(hwnd, hdc);
 
+			}
+			return 0;
+		}
+		case WM_LBUTTONUP:
+		{
+		
+			bNowDraw = FALSE;
+			return 0;
+		}
 		// All other messages pass to the message handler in the system class.
 		default:
 		{

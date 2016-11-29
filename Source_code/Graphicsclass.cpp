@@ -52,7 +52,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
+	m_Camera->SetPosition(0.0f, 0.0f, -20.0f);
 	
 	// Create the model object.
 	m_Model = new ModelClass;
@@ -62,7 +62,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(),"Resource/cube.txt",L"Resource/seafloar.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(),"Resource/cube.txt",L"Resource/uv_snap.dds");
 	if(!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -143,20 +143,27 @@ void GraphicsClass::Shutdown()
 }
 
 
-bool GraphicsClass::Frame()
+bool GraphicsClass::Frame(int x,int y)
 {
 	bool result;
-	static float rotation = 0.0f;
+	static float rotationX = 0.0f;
+	static float rotationY = 0.0f;
 
 
-	rotation += (float)XM_PI * 0.005f;
-	if (rotation > 360.0f)
+	rotationX = (float)XM_PI * (x*0.003f);
+	if (rotationX > 360.0f)
 	{
-		rotation -= 360.0f;
+		rotationX -= 360.0f;
+	}
+
+	rotationY = (float)XM_PI * (y*0.003f);
+	if (rotationY > 360.0f)
+	{
+		rotationY -= 360.0f;
 	}
 
 	// Render the graphics scene.
-	result = Render(rotation);
+	result = Render(rotationX, rotationY);
 	if(!result)
 	{
 		return false;
@@ -166,7 +173,7 @@ bool GraphicsClass::Frame()
 }
 
 
-bool GraphicsClass::Render(float rotation)
+bool GraphicsClass::Render(float rotationX, float rotationY)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
 	XMVECTOR Direction, DiffuseColor;
@@ -185,7 +192,7 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	worldMatrix = XMMatrixRotationX(rotation)*XMMatrixRotationY(rotation);
+	worldMatrix = XMMatrixRotationY(rotationX)*XMMatrixRotationX(-rotationY);
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_D3D->GetDeviceContext());
