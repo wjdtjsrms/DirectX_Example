@@ -62,7 +62,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(),"Resource/cube.txt",L"Resource/uv_snap.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(),"Resource/test.obj","Resource/model.txt",L"Resource/uv_snap.dds"); //change file
 	if(!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -92,8 +92,10 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the light object.
+	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	m_Light->SetDiffuseColor(1.0, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
+	m_Light->SetDirection(1.0f, 0.0f, 0.0f);
+	
 
 	return true;
 }
@@ -143,23 +145,23 @@ void GraphicsClass::Shutdown()
 }
 
 
-bool GraphicsClass::Frame(int x,int y)
+bool GraphicsClass::Frame(int mouseX,int mouseY)
 {
 	bool result;
-	static float rotationX = 0.0f;
-	static float rotationY = 0.0f;
+	float rotationX;
+	float rotationY;
 
-
-	rotationX = (float)XM_PI * (x*0.003f);
-	if (rotationX > 360.0f)
+	rotationX = (float)XM_PI * (mouseX*0.001f);
+	if (rotationX >=360.0f)
 	{
-		rotationX -= 360.0f;
+		rotationX = 0.0f;
 	}
-
-	rotationY = (float)XM_PI * (y*0.003f);
-	if (rotationY > 360.0f)
+	
+	rotationY = (float)XM_PI * (mouseY*0.001f);
+	
+	if (rotationY >= 360.0f)
 	{
-		rotationY -= 360.0f;
+		rotationY = 0;
 	}
 
 	// Render the graphics scene.
@@ -176,7 +178,7 @@ bool GraphicsClass::Frame(int x,int y)
 bool GraphicsClass::Render(float rotationX, float rotationY)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
-	XMVECTOR Direction, DiffuseColor;
+	XMVECTOR Direction, DiffuseColor,AmbeintColor;
 	bool result;
 
 
@@ -193,6 +195,7 @@ bool GraphicsClass::Render(float rotationX, float rotationY)
 
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
 	worldMatrix = XMMatrixRotationY(rotationX)*XMMatrixRotationX(-rotationY);
+	//viewMatrix = viewMatrix*XMMatrixRotationY(rotationX)*XMMatrixRotationX(-rotationY);
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_D3D->GetDeviceContext());
@@ -200,9 +203,10 @@ bool GraphicsClass::Render(float rotationX, float rotationY)
 	// Get the direction, diffuse color
 	m_Light->GetDirection(Direction);
 	m_Light->GetDiffuseColor(DiffuseColor);
+	m_Light->GetAmbientColor(AmbeintColor);
 
 	// Render the model using the color shader.
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture(), Direction, DiffuseColor);
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture(), Direction, DiffuseColor,AmbeintColor);
 	if(!result)
 	{
 		return false;

@@ -65,8 +65,7 @@ static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 // GLOBALS //
 /////////////
 static SystemClass* ApplicationHandle = 0;
-static int x;
-static int y;
+
 
 
 

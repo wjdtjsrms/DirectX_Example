@@ -8,8 +8,7 @@ SystemClass::SystemClass()
 {
 	m_Input = 0;
 	m_Graphics = 0;
-	x = 0;
-	y = 0;
+
 	
 }
 
@@ -37,6 +36,7 @@ bool SystemClass::Initialize()
 	// Initialize the windows api.
 	InitializeWindows(screenWidth, screenHeight);
 
+	
 	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
 	m_Input = new InputClass;
 	if(!m_Input)
@@ -45,7 +45,13 @@ bool SystemClass::Initialize()
 	}
 
 	// Initialize the input object.
-	m_Input->Initialize();
+	result=m_Input->Initialize(m_hinstance, m_hwnd, screenWidth, screenHeight);
+	if (!result) {
+		MessageBox(m_hwnd, L"Could not initialize the input object.", L"Error", MB_OK); 
+		return false;
+	}
+
+
 
 	// Create the graphics object.  This object will handle rendering all the graphics for this application.
 	m_Graphics = new GraphicsClass;
@@ -78,6 +84,7 @@ void SystemClass::Shutdown()
 	// Release the input object.
 	if(m_Input)
 	{
+		m_Input->Shutdown();
 		delete m_Input;
 		m_Input = 0;
 	}
@@ -101,17 +108,17 @@ void SystemClass::Run()
 	
 	// Loop until there is a quit message from the window or the user.
 	done = false;
-	while(!done)
+	while (!done)
 	{
 		// Handle the windows messages.
-		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
 
 		// If windows signals to end the application then exit out.
-		if(msg.message == WM_QUIT)
+		if (msg.message == WM_QUIT)
 		{
 			done = true;
 		}
@@ -119,10 +126,13 @@ void SystemClass::Run()
 		{
 			// Otherwise do the frame processing.
 			result = Frame();
-			if(!result)
+			if (!result)
 			{
 				done = true;
 			}
+		}
+		if (m_Input->IsEscapePressed() == true){
+			done = true;
 		}
 
 	}
@@ -134,20 +144,25 @@ void SystemClass::Run()
 bool SystemClass::Frame()
 {
 	bool result;
+	int mouseX, mouseY;
 
+	result = m_Input->Frame();
+	if (!result){
+		return false;
+	}
+	
+	m_Input->GetMouseLocation(mouseX, mouseY);
 
-	// Check if the user pressed escape and wants to exit the application.
-	if(m_Input->IsKeyDown(VK_ESCAPE))
-	{
+	result = m_Graphics->Frame(mouseX, mouseY);
+	if (!result){
 		return false;
 	}
 
-	// Do the frame processing for the graphics object.
-	result = m_Graphics->Frame(x,y);
-	if(!result)
-	{
+	result = m_Graphics->Frame(mouseX, mouseY);
+	if (!result){
 		return false;
 	}
+
 
 	return true;
 }
@@ -155,30 +170,7 @@ bool SystemClass::Frame()
 
 LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-	switch(umsg)
-	{
-		// Check if a key has been pressed on the keyboard.
-		case WM_KEYDOWN:
-		{
-			// If a key is pressed send it to the input object so it can record that state.
-			m_Input->KeyDown((unsigned int)wparam);
-			return 0;
-		}
-
-		// Check if a key has been released on the keyboard.
-		case WM_KEYUP:
-		{
-			// If a key is released then send it to the input object so it can unset the state for that key.
-			m_Input->KeyUp((unsigned int)wparam);
-			return 0;
-		}
-
-		// Any other messages send to the default message handler as our application won't make use of them.
-		default:
-		{
-			return DefWindowProc(hwnd, umsg, wparam, lparam);
-		}
-	}
+	return DefWindowProc(hwnd, umsg, wparam, lparam);
 }
 
 
@@ -292,9 +284,6 @@ void SystemClass::ShutdownWindows()
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 {
-	HDC hdc;
-
-	static BOOL bNowDraw = false;
 
 	switch(umessage)
 	{
@@ -305,39 +294,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 			return 0;
 		}
 
-		// Check if the window is being closed.
-		case WM_CLOSE:
-		{
-			PostQuitMessage(0);		
-			return 0;
-		}
-		case WM_LBUTTONDOWN:
-		{
-			x = (int)(short)LOWORD(lparam);
-			y = (int)(short)HIWORD(lparam);
-			
-			bNowDraw = TRUE;
-			return 0;
-		}
-		case WM_MOUSEMOVE:
-		{
-			if (bNowDraw){
-				hdc = GetDC(hwnd);
-				MoveToEx(hdc, x, y, NULL);
-				x = (int)(short)LOWORD(lparam);
-				y = (int)(short)HIWORD(lparam);
-				ReleaseDC(hwnd, hdc);
-
-			}
-			return 0;
-		}
-		case WM_LBUTTONUP:
-		{
-		
-			bNowDraw = FALSE;
-			return 0;
-		}
-		// All other messages pass to the message handler in the system class.
 		default:
 		{
 			return ApplicationHandle->MessageHandler(hwnd, umessage, wparam, lparam);

@@ -10,6 +10,7 @@ ModelClass::ModelClass()
 	m_indexBuffer = 0;
 	m_Texture = 0;
 	m_model = 0;
+	m_parser = 0;
 }
 
 
@@ -23,9 +24,15 @@ ModelClass::~ModelClass()
 }
 
 
-bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename)
+bool ModelClass::Initialize(ID3D11Device* device, char* objFileName,char* modelFilename, WCHAR* textureFilename)
 {
 	bool result;
+
+	result = LoadParser(objFileName);
+	if (!result)
+	{
+		return false;
+	}
 
 	//Load model data
 	result = LoadModel(modelFilename);
@@ -61,6 +68,10 @@ void ModelClass::Shutdown()
 
 	// Release the model data.
 	ReleaseModel();
+
+
+	ReleaseParser();
+	
 
 	return;
 }
@@ -305,6 +316,45 @@ void ModelClass::ReleaseModel()
 	{
 		delete[] m_model;
 		m_model = 0;
+	}
+
+	return;
+}
+
+bool ModelClass::LoadParser(char* FileName){
+
+	bool result;
+
+	m_parser = new Obj_loader;
+
+	if (!m_parser){
+		return false;
+	}
+
+	result = m_parser->Initialize(FileName);
+
+	if (!result)
+	{
+		return false;
+	}
+
+	result=m_parser->LoadData(FileName);
+
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+
+}
+
+void ModelClass::ReleaseParser()
+{
+	if (m_parser)
+	{
+		//delete[] m_parser; Deleted twice
+		m_parser = 0;
 	}
 
 	return;

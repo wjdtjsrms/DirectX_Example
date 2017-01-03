@@ -13,6 +13,7 @@
 #include <fstream>
 
 #include "textureclass.h"
+#include "obj_parser.h"
 
 using namespace std;
 
@@ -43,7 +44,7 @@ public:
 	ModelClass(const ModelClass&);
 	~ModelClass();
 
-	bool Initialize(ID3D11Device*, char* ,WCHAR*);
+	bool Initialize(ID3D11Device*, char*,char* ,WCHAR*);
 	void Shutdown();
 	
 	void Render(ID3D11DeviceContext*);
@@ -61,12 +62,16 @@ private:
 	bool LoadModel(char*);
 	void ReleaseModel();
 
+	bool LoadParser(char *);
+	void ReleaseParser();
+
 
 private:
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
 	int m_vertexCount, m_indexCount;
 	TextureClass* m_Texture;
 	ModelType* m_model;
+	Obj_loader* m_parser;
 };
 
 #endif

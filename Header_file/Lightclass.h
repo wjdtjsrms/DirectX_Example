@@ -13,13 +13,17 @@ public:
 
 	void SetDiffuseColor(float, float, float, float);
 	void SetDirection(float, float, float);
+	void SetAmbientColor(float, float, float, float);
 
 	void GetDiffuseColor(XMVECTOR&);
 	void GetDirection(XMVECTOR&);
+	void GetAmbientColor(XMVECTOR&);
 
 private:
+	XMFLOAT4 m_ambientColor;
 	XMFLOAT4 m_diffuseColor;
 	XMFLOAT3 m_direction;
+	
 };
 
 

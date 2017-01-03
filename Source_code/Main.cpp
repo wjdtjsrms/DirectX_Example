@@ -9,7 +9,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	SystemClass* System;
 	bool result;
 	
-	
+	AllocConsole();
+	freopen("CONOUT$", "wt", stdout);
+
+
 	// Create the system object.
 	System = new SystemClass;
 	if(!System)
