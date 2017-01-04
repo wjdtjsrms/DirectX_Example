@@ -35,6 +35,8 @@ public:
 	bool IsEscapePressed(); 
 	void GetMouseLocation(int&, int&);
 	int mouseKeyIsDown(unsigned char);
+	void GetPlayerLocation(float& ,float&);
+
 
 private:
 	bool ReadKeyboard();
@@ -54,6 +56,8 @@ private:
 
 	int m_screenWidth, m_screenHeight;
 	int m_mouseX, m_mouseY;
+
+	float m_playerX, m_playerY;
 
 	
 

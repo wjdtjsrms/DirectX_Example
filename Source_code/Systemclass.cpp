@@ -145,6 +145,7 @@ bool SystemClass::Frame()
 {
 	bool result;
 	int mouseX, mouseY;
+	float player_X, player_Y;
 
 	result = m_Input->Frame();
 	if (!result){
@@ -152,18 +153,12 @@ bool SystemClass::Frame()
 	}
 	
 	m_Input->GetMouseLocation(mouseX, mouseY);
+	m_Input->GetPlayerLocation(player_X, player_Y);
 
-	result = m_Graphics->Frame(mouseX, mouseY);
+	result = m_Graphics->Frame(mouseX, mouseY,player_X,player_Y);
 	if (!result){
 		return false;
 	}
-
-	result = m_Graphics->Frame(mouseX, mouseY);
-	if (!result){
-		return false;
-	}
-
-
 	return true;
 }
 

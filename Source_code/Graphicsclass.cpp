@@ -145,27 +145,20 @@ void GraphicsClass::Shutdown()
 }
 
 
-bool GraphicsClass::Frame(int mouseX,int mouseY)
+bool GraphicsClass::Frame(int mouseX, int mouseY, float player_X, float player_Y)
 {
 	bool result;
 	float rotationX;
 	float rotationY;
 
-	rotationX = (float)XM_PI * (mouseX*0.001f);
-	if (rotationX >=360.0f)
-	{
-		rotationX = 0.0f;
-	}
+	rotationX = (float)XM_PI * (mouseX*0.0008f);
+
 	
-	rotationY = (float)XM_PI * (mouseY*0.001f);
+	rotationY = (float)XM_PI * (mouseY*0.0008f);
 	
-	if (rotationY >= 360.0f)
-	{
-		rotationY = 0;
-	}
 
 	// Render the graphics scene.
-	result = Render(rotationX, rotationY);
+	result = Render(rotationX, rotationY,player_X,player_Y);
 	if(!result)
 	{
 		return false;
@@ -175,10 +168,12 @@ bool GraphicsClass::Frame(int mouseX,int mouseY)
 }
 
 
-bool GraphicsClass::Render(float rotationX, float rotationY)
+bool GraphicsClass::Render(float rotationX, float rotationY, float player_X, float player_Y)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
 	XMVECTOR Direction, DiffuseColor,AmbeintColor;
+	
+	XMVECTOR lookAt; //이걸 쓰렴 미래의 선근아
 	bool result;
 
 
@@ -194,9 +189,9 @@ bool GraphicsClass::Render(float rotationX, float rotationY)
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	worldMatrix = XMMatrixRotationY(rotationX)*XMMatrixRotationX(-rotationY);
-	//viewMatrix = viewMatrix*XMMatrixRotationY(rotationX)*XMMatrixRotationX(-rotationY);
-
+	//worldMatrix = XMMatrixRotationY(rotationX)*XMMatrixRotationX(-rotationY);
+	viewMatrix = viewMatrix*XMMatrixTranslation(-player_X, 0, -player_Y)*XMMatrixRotationY(-rotationX)*XMMatrixRotationX(-rotationY); //곱하는 순서 주의 할것 적용 되는 순서와 곱하는 순서는 반대,흠 벡터로 가게 만들어 겠는데?
+	std::cout << rotationX << std::endl;
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_D3D->GetDeviceContext());
 

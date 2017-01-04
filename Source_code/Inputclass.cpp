@@ -9,7 +9,8 @@ InputClass::InputClass()
 	m_directInput = 0; 
 	m_keyboard = 0;
 	m_mouse = 0;
-
+	m_playerX = 0;
+	m_playerY = 0;
 }
 
 
@@ -176,7 +177,7 @@ void InputClass::ProcessInput(){
 	//// Update the location of the mouse cursor based on the change of the mouse location during the frame.
 	if (m_mouseState.rgbButtons[MOUSE_LEFT & 0x80]){
 		m_mouseX += m_mouseState.lX;
-		//std::cout << m_mouseState.lX << std::endl;
+		
 		m_mouseY += m_mouseState.lY;
 	}
 
@@ -193,6 +194,19 @@ bool InputClass::IsEscapePressed(){
 	if (m_keyboardState[DIK_ESCAPE] & 0x80){
 		return true;
 	}
+	if (m_keyboardState[DIK_W] & 0x80){
+		m_playerY += 0.1f;
+		
+	}
+	if (m_keyboardState[DIK_A] & 0x80){
+		m_playerX -= 0.1f;
+	}
+	if (m_keyboardState[DIK_S] & 0x80){
+		m_playerY -= 0.1f;
+	}
+	if (m_keyboardState[DIK_D] & 0x80){
+		m_playerX += 0.1f;
+	}
 	return false;
 }
 
@@ -202,4 +216,11 @@ void InputClass::GetMouseLocation(int& mouseX, int& mouseY)
 	mouseY = m_mouseY; 
 	return; 
 }
+
+void InputClass::GetPlayerLocation(float& player_X, float& player_Y){
+	player_X = m_playerX;
+	player_Y = m_playerY;
+	return;
+}
+
 

@@ -36,10 +36,10 @@ public:
 
 	bool Initialize(int, int, HWND);
 	void Shutdown();
-	bool Frame(int,int);
+	bool Frame(int, int, float, float);
 
 private:
-	bool Render(float,float);
+	bool Render(float, float, float, float);
 
 private:
 	D3DClass* m_D3D;
