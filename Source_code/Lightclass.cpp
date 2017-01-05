@@ -14,6 +14,17 @@ LightClass::~LightClass()
 {
 }
 
+void LightClass::setSpecularColor(float red, float green, float blue, float alpha)
+{
+	m_specularColor = XMFLOAT4(red, green, blue, alpha);
+	return;
+}
+void LightClass::SetSpecularPower(float power)
+{
+	m_specularPower = power;
+	return;
+}
+
 void LightClass::SetDiffuseColor(float red, float green, float blue, float alpha)
 {
 	m_diffuseColor = XMFLOAT4(red, green, blue, alpha);
@@ -47,5 +58,17 @@ void LightClass::GetDirection(XMVECTOR& direction)
 void LightClass::GetAmbientColor(XMVECTOR& ambeintColor)
 {
 	ambeintColor = XMLoadFloat4(&m_ambientColor);
+	return;
+}
+
+void LightClass::GetSpecularColor(XMVECTOR& specularColor)
+{
+	specularColor = XMLoadFloat4(&m_specularColor);
+	return;
+}
+
+void LightClass::GetSpecularPower(float& specularPower)
+{
+	specularPower = m_specularPower;
 	return;
 }

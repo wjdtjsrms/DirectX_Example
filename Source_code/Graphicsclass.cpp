@@ -52,7 +52,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 0.0f, -20.0f);
+	m_Camera->SetPosition(0.0f, 0.0f, -15.0f);
 	
 	// Create the model object.
 	m_Model = new ModelClass;
@@ -94,7 +94,10 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// Initialize the light object.
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	m_Light->SetDiffuseColor(1.0, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(1.0f, 0.0f, 0.0f);
+	m_Light->SetDirection(-1.0f, 0.0f, 0.0f);
+	m_Light->setSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light->SetSpecularPower(32.0f);
+
 	
 
 	return true;
@@ -171,11 +174,14 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, float player_X, float player_Y
 bool GraphicsClass::Render(float rotationX, float rotationY, float player_X, float player_Y)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
-	XMVECTOR Direction, DiffuseColor,AmbeintColor;
+	XMVECTOR Direction, DiffuseColor, AmbeintColor, SpecularColor, CameraPostion;
+	float SpecularPower;
 	
-	XMVECTOR lookAt; //이걸 쓰렴 미래의 선근아
+	XMMATRIX Rotation;
+	
 	bool result;
 
+	
 
 	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
@@ -188,20 +194,28 @@ bool GraphicsClass::Render(float rotationX, float rotationY, float player_X, flo
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
-	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	//worldMatrix = XMMatrixRotationY(rotationX)*XMMatrixRotationX(-rotationY);
-	viewMatrix = viewMatrix*XMMatrixTranslation(-player_X, 0, -player_Y)*XMMatrixRotationY(-rotationX)*XMMatrixRotationX(-rotationY); //곱하는 순서 주의 할것 적용 되는 순서와 곱하는 순서는 반대,흠 벡터로 가게 만들어 겠는데?
-	std::cout << rotationX << std::endl;
-	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_D3D->GetDeviceContext());
 
 	// Get the direction, diffuse color
 	m_Light->GetDirection(Direction);
 	m_Light->GetDiffuseColor(DiffuseColor);
 	m_Light->GetAmbientColor(AmbeintColor);
+	m_Light->GetSpecularColor(SpecularColor);
+	m_Light->GetSpecularPower(SpecularPower);
+
+	CameraPostion = XMLoadFloat3(&m_Camera->GetPosition());
+
+	// Rotate the world matrix by the rotation value so that the triangle will spin.
+	//worldMatrix = XMMatrixRotationY(rotationX)*XMMatrixRotationX(-rotationY);
+	//viewMatrix = viewMatrix*XMMatrixRotationY(rotationX)*XMMatrixRotationX(-rotationY); //곱하는 순서 주의 할것 적용 되는 순서와 곱하는 순서는 반대,흠 벡터로 가게 만들어야겠는데?
+	
+	
+
+	Rotation = XMMatrixRotationY(rotationX);
+	Direction = XMVector3TransformCoord(Direction, Rotation);
 
 	// Render the model using the color shader.
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture(), Direction, DiffuseColor,AmbeintColor);
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture(), Direction, DiffuseColor, AmbeintColor, CameraPostion,SpecularColor,SpecularPower);
 	if(!result)
 	{
 		return false;
