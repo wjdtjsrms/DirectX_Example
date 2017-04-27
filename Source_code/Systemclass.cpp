@@ -8,7 +8,7 @@ SystemClass::SystemClass()
 {
 	m_Input = 0;
 	m_Graphics = 0;
-
+	m_Fps = 0;
 	
 }
 
@@ -66,6 +66,15 @@ bool SystemClass::Initialize()
 	{
 		return false;
 	}
+
+
+	m_Fps = new FpsClass;
+	if (!m_Fps){
+		return false;
+	}
+
+	m_Fps->Initialize();
+
 	
 	return true;
 }
@@ -87,6 +96,11 @@ void SystemClass::Shutdown()
 		m_Input->Shutdown();
 		delete m_Input;
 		m_Input = 0;
+	}
+	if (m_Fps)
+	{
+		delete m_Fps;
+		m_Fps = 0;
 	}
 
 	// Shutdown the window.
@@ -154,11 +168,15 @@ bool SystemClass::Frame()
 	
 	m_Input->GetMouseLocation(mouseX, mouseY);
 	m_Input->GetPlayerLocation(player_X, player_Y);
+	
+	m_Fps->Frame();
 
-	result = m_Graphics->Frame(mouseX, mouseY,player_X,player_Y);
+	result = m_Graphics->Frame(mouseX, mouseY, player_X, player_Y, m_Fps->GetFps());
 	if (!result){
 		return false;
 	}
+
+	
 	return true;
 }
 

@@ -48,6 +48,11 @@ public:
 
 	void GetVideoCardInfo(char*, int&);
 
+	void TurnZBufferOn();
+	void TurnZBufferOff();
+	void TurnOnAlphaBlending();
+	void TurnOffAlphaBlending();
+
 private:
 	bool m_vsync_enabled;
 	int m_videoCardMemory;
@@ -64,6 +69,10 @@ private:
 	XMFLOAT4X4 m_projectionMatrix;
 	XMFLOAT4X4 m_worldMatrix;
 	XMFLOAT4X4 m_orthoMatrix;
+
+	ID3D11DepthStencilState* m_depthDisabledStencilState;
+	ID3D11BlendState* m_alphaEnableBlendingState;
+	ID3D11BlendState* m_alphaDisableBlendingState;
 };
 
 #endif
