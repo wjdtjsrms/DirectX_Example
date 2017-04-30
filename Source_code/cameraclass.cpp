@@ -4,7 +4,6 @@
 #include "../Header_file/Cameraclass.h"
 
 
-
 CameraClass::CameraClass()
 {
 	m_positionX = 0.0f;
@@ -66,7 +65,6 @@ void CameraClass::Render()
 
 	// Setup the vector that points upwards. 상향벡터
 	up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	
 
 	// Setup the position of the camera in the world. 카메라 위치
 	position = XMVectorSet(m_positionX, m_positionY, m_positionZ, 0.0f);

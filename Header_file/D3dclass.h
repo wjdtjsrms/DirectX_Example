@@ -48,6 +48,7 @@ public:
 
 	void GetVideoCardInfo(char*, int&);
 
+
 	void TurnZBufferOn();
 	void TurnZBufferOff();
 	void TurnOnAlphaBlending();

@@ -10,17 +10,9 @@
 ///////////////////////
 #include "d3dclass.h"
 #include "cameraclass.h"
-#include "modelclass.h" //in textureclass.h
-
+#include "modelclass.h"
 #include "lightshaderclass.h"
 #include "lightclass.h"
-#include "Textureshaderclass.h"
-
-#include "Bitmapclass.h"
-
-#include "Modellistclass.h"
-#include "Frustumclass.h"
-
 #include "Textclass.h"
 
 
@@ -45,10 +37,10 @@ public:
 
 	bool Initialize(int, int, HWND);
 	void Shutdown();
-	bool Frame(int, int, float, float,int);
+	bool Frame(int, int, int, int,float);
 
 private:
-	bool Render(float, float, float, float);
+	bool Render(int, int);
 
 private:
 	D3DClass* m_D3D;
@@ -56,16 +48,7 @@ private:
 	ModelClass* m_Model;
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
-	Textureshaderclass* m_TextureShader;
-	
-	BitmapClass* m_Bitmap;
-
 	TextClass* m_Text;
-
-	ModelListClass* m_ModelList;
-	FrustumClass* m_Frustum;
-
-
 };
 
 #endif

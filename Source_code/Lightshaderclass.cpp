@@ -11,7 +11,6 @@ LightShaderClass::LightShaderClass()
 	m_layout = 0;
 	m_matrixBuffer = 0;
 	m_sampleState = 0;
-
 	m_lightBuffer = 0;
 	m_cameraBuffer = 0;
 	m_lightBuffer = 0;
@@ -34,7 +33,7 @@ bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"Shader_code/Light.vs", L"Shader_code/Light.ps"); //흠 혹시 라이트나 이거저것 추가 되서 그런가?
+	result = InitializeShader(device, hwnd, L"Shader_code/Light.vs", L"Shader_code/Light.ps");
 	if(!result)
 	{
 		return false;
@@ -42,7 +41,6 @@ bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 
 	return true;
 }
-
 
 
 void LightShaderClass::Shutdown()
@@ -55,7 +53,7 @@ void LightShaderClass::Shutdown()
 
 
 bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX& worldMatrix, XMMATRIX& viewMatrix,
-							  XMMATRIX& projectionMatrix, ID3D11ShaderResourceView* texture,XMVECTOR& lightDirection, XMVECTOR& diffuseColor,XMVECTOR& ambientColor, XMVECTOR& cameraPosition, XMVECTOR& specularColor,float specularPower)
+							  XMMATRIX& projectionMatrix, ID3D11ShaderResourceView* texture, XMVECTOR& lightDirection, XMVECTOR& diffuseColor,XMVECTOR& ambientColor, XMVECTOR& cameraPosition, XMVECTOR& specularColor,float specularPower)
 {
 	bool result;
 
@@ -72,8 +70,6 @@ bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount
 
 	return true;
 }
-
-
 
 
 bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
@@ -431,8 +427,6 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 
 	return true;
 }
-
-
 
 
 void LightShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)

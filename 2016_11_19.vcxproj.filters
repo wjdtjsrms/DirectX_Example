@@ -27,57 +27,30 @@
     <None Include="Resource\seafloar.dds">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="Shader_code\Font.ps">
+      <Filter>소스 파일\Shader_code</Filter>
+    </None>
+    <None Include="Shader_code\Font.vs">
+      <Filter>소스 파일\Shader_code</Filter>
+    </None>
     <None Include="Shader_code\Light.ps">
       <Filter>소스 파일\Shader_code</Filter>
     </None>
     <None Include="Shader_code\Light.vs">
       <Filter>소스 파일\Shader_code</Filter>
     </None>
-    <None Include="Shader_code\Texture.ps">
-      <Filter>소스 파일\Shader_code</Filter>
-    </None>
-    <None Include="Shader_code\Texture.vs">
-      <Filter>소스 파일\Shader_code</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source_code\D3dclass.cpp">
-      <Filter>소스 파일\Source_code</Filter>
-    </ClCompile>
-    <ClCompile Include="Source_code\Graphicsclass.cpp">
-      <Filter>소스 파일\Source_code</Filter>
-    </ClCompile>
-    <ClCompile Include="Source_code\Inputclass.cpp">
-      <Filter>소스 파일\Source_code</Filter>
-    </ClCompile>
-    <ClCompile Include="Source_code\Main.cpp">
-      <Filter>소스 파일\Source_code</Filter>
-    </ClCompile>
-    <ClCompile Include="Source_code\Modelclass.cpp">
-      <Filter>소스 파일\Source_code</Filter>
-    </ClCompile>
-    <ClCompile Include="Source_code\Systemclass.cpp">
-      <Filter>소스 파일\Source_code</Filter>
-    </ClCompile>
-    <ClCompile Include="Source_code\Textureclass.cpp">
+    <ClCompile Include="Source_code\Bitmapclass.cpp">
       <Filter>소스 파일\Source_code</Filter>
     </ClCompile>
     <ClCompile Include="Source_code\cameraclass.cpp">
       <Filter>소스 파일\Source_code</Filter>
     </ClCompile>
-    <ClCompile Include="Source_code\Lightshaderclass.cpp">
+    <ClCompile Include="Source_code\Cpuclass.cpp">
       <Filter>소스 파일\Source_code</Filter>
     </ClCompile>
-    <ClCompile Include="Source_code\Lightclass.cpp">
-      <Filter>소스 파일\Source_code</Filter>
-    </ClCompile>
-    <ClCompile Include="Source_code\obj_parser.cpp">
-      <Filter>소스 파일\Source_code</Filter>
-    </ClCompile>
-    <ClCompile Include="Source_code\Bitmapclass.cpp">
-      <Filter>소스 파일\Source_code</Filter>
-    </ClCompile>
-    <ClCompile Include="Source_code\TextureShaderclass.cpp">
+    <ClCompile Include="Source_code\D3dclass.cpp">
       <Filter>소스 파일\Source_code</Filter>
     </ClCompile>
     <ClCompile Include="Source_code\Fontclass.cpp">
@@ -86,72 +59,93 @@
     <ClCompile Include="Source_code\Fontshaderclass.cpp">
       <Filter>소스 파일\Source_code</Filter>
     </ClCompile>
+    <ClCompile Include="Source_code\Fpsclass.cpp">
+      <Filter>소스 파일\Source_code</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_code\Graphicsclass.cpp">
+      <Filter>소스 파일\Source_code</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_code\Inputclass.cpp">
+      <Filter>소스 파일\Source_code</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_code\Lightclass.cpp">
+      <Filter>소스 파일\Source_code</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_code\Lightshaderclass.cpp">
+      <Filter>소스 파일\Source_code</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_code\Main.cpp">
+      <Filter>소스 파일\Source_code</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_code\Modelclass.cpp">
+      <Filter>소스 파일\Source_code</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_code\obj_parser.cpp">
+      <Filter>소스 파일\Source_code</Filter>
+    </ClCompile>
+    <ClCompile Include="Source_code\Systemclass.cpp">
+      <Filter>소스 파일\Source_code</Filter>
+    </ClCompile>
     <ClCompile Include="Source_code\Textclass.cpp">
       <Filter>소스 파일\Source_code</Filter>
     </ClCompile>
-    <ClCompile Include="Source_code\Frustumclass.cpp">
+    <ClCompile Include="Source_code\Textureclass.cpp">
       <Filter>소스 파일\Source_code</Filter>
     </ClCompile>
-    <ClCompile Include="Source_code\Modellistclass.cpp">
-      <Filter>소스 파일\Source_code</Filter>
-    </ClCompile>
-    <ClCompile Include="Source_code\Fpsclass.cpp">
+    <ClCompile Include="Source_code\Timeclass.cpp">
       <Filter>소스 파일\Source_code</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header_file\Graphicsclass.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
-    <ClInclude Include="Header_file\Inputclass.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
-    <ClInclude Include="Header_file\Modelclass.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
-    <ClInclude Include="Header_file\SystemClass.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
-    <ClInclude Include="Header_file\Textureclass.h">
+    <ClInclude Include="Header_file\Bitmapclass.h">
       <Filter>헤더 파일\Header_file</Filter>
     </ClInclude>
     <ClInclude Include="Header_file\Cameraclass.h">
       <Filter>헤더 파일\Header_file</Filter>
     </ClInclude>
+    <ClInclude Include="Header_file\Cpuclass.h">
+      <Filter>헤더 파일\Header_file</Filter>
+    </ClInclude>
     <ClInclude Include="Header_file\D3dclass.h">
       <Filter>헤더 파일\Header_file</Filter>
     </ClInclude>
-    <ClInclude Include="Header_file\Lightshaderclass.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
-    <ClInclude Include="Header_file\Lightclass.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
-    <ClInclude Include="Header_file\obj_parser.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
-    <ClInclude Include="Header_file\Bitmapclass.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
-    <ClInclude Include="Header_file\Textureshaderclass.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
     <ClInclude Include="Header_file\Fontclass.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
-    <ClInclude Include="Header_file\Textclass.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
-    <ClInclude Include="Header_file\Frustumclass.h">
-      <Filter>헤더 파일\Header_file</Filter>
-    </ClInclude>
-    <ClInclude Include="Header_file\Modellistclass.h">
       <Filter>헤더 파일\Header_file</Filter>
     </ClInclude>
     <ClInclude Include="Header_file\Fontshaderclass.h">
       <Filter>헤더 파일\Header_file</Filter>
     </ClInclude>
     <ClInclude Include="Header_file\FpsClass.h">
+      <Filter>헤더 파일\Header_file</Filter>
+    </ClInclude>
+    <ClInclude Include="Header_file\Graphicsclass.h">
+      <Filter>헤더 파일\Header_file</Filter>
+    </ClInclude>
+    <ClInclude Include="Header_file\Inputclass.h">
+      <Filter>헤더 파일\Header_file</Filter>
+    </ClInclude>
+    <ClInclude Include="Header_file\Lightclass.h">
+      <Filter>헤더 파일\Header_file</Filter>
+    </ClInclude>
+    <ClInclude Include="Header_file\Lightshaderclass.h">
+      <Filter>헤더 파일\Header_file</Filter>
+    </ClInclude>
+    <ClInclude Include="Header_file\Modelclass.h">
+      <Filter>헤더 파일\Header_file</Filter>
+    </ClInclude>
+    <ClInclude Include="Header_file\obj_parser.h">
+      <Filter>헤더 파일\Header_file</Filter>
+    </ClInclude>
+    <ClInclude Include="Header_file\SystemClass.h">
+      <Filter>헤더 파일\Header_file</Filter>
+    </ClInclude>
+    <ClInclude Include="Header_file\Textclass.h">
+      <Filter>헤더 파일\Header_file</Filter>
+    </ClInclude>
+    <ClInclude Include="Header_file\Textureclass.h">
+      <Filter>헤더 파일\Header_file</Filter>
+    </ClInclude>
+    <ClInclude Include="Header_file\Timeclass.h">
       <Filter>헤더 파일\Header_file</Filter>
     </ClInclude>
   </ItemGroup>
