@@ -24,7 +24,7 @@ ModelClass::~ModelClass()
 }
 
 
-bool ModelClass::Initialize(ID3D11Device* device, char* objFileName,char* modelFilename, WCHAR* textureFilename)
+bool ModelClass::Initialize(ID3D11Device* device, char* objFileName, char* modelFilename, WCHAR* textureFilename1, WCHAR* textureFilename2)
 {
 	bool result;
 
@@ -48,7 +48,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* objFileName,char* modelF
 		return false;
 	}
 
-	result = LoadTexture(device, textureFilename);
+	result = LoadTexture(device, textureFilename1, textureFilename2);
 	if (!result)
 	{
 		return false;
@@ -91,7 +91,7 @@ int ModelClass::GetIndexCount()
 	return m_indexCount;
 }
 
-ID3D11ShaderResourceView* ModelClass::GetTexture(){
+ID3D11ShaderResourceView** ModelClass::GetTexture(){
 
 	return m_Texture->GetTexture();
 }
@@ -224,7 +224,7 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
-bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* filename){
+bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* filename1, WCHAR* filename2){
 	bool result;
 
 	m_Texture = new TextureClass;
@@ -232,7 +232,7 @@ bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* filename){
 
 		return false;
 	}
-	result = m_Texture->Initialize(device, filename);
+	result = m_Texture->Initialize(device, filename1, filename2);
 	if (!result)
 	{
 		return false;

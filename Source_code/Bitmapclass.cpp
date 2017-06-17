@@ -94,7 +94,7 @@ int BitmapClass::GetIndexCount()
 }
 
 
-ID3D11ShaderResourceView* BitmapClass::GetTexture()
+ID3D11ShaderResourceView** BitmapClass::GetTexture()
 {
 	return m_Texture->GetTexture();
 }

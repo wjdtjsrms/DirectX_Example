@@ -66,7 +66,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(),"Resource/test.obj","Resource/model.txt",L"Resource/uv_snap.dds"); //change file
+	result = m_Model->Initialize(m_D3D->GetDevice(), "Resource/test.obj", "Resource/model.txt", L"Resource/uv_snap.dds", L"Resource/uv_sanp2.dds"); //change file
 	if(!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -250,7 +250,7 @@ bool GraphicsClass::Render(int mouseX, int mouseY)
 
 	m_Model->Render(m_D3D->GetDeviceContext());
 	// Render the model using the color shader.
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture(), Direction, DiffuseColor, AmbeintColor, CameraPostion,SpecularColor,SpecularPower);
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, Direction, DiffuseColor, AmbeintColor, CameraPostion,SpecularColor,SpecularPower,m_Model->GetTexture());
 	if(!result)
 	{
 		return false;

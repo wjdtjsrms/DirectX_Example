@@ -103,7 +103,7 @@ void FontClass::ReleaseTexture(){
 	return;
 
 }
-ID3D11ShaderResourceView* FontClass::GetTexture(){
+ID3D11ShaderResourceView** FontClass::GetTexture(){
 	return m_Texture->GetTexture();
 }
 

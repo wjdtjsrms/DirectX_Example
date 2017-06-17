@@ -11,12 +11,14 @@ public:
 	TextureClass(const TextureClass&);
 	~TextureClass();
 
+	bool Initialize(ID3D11Device*, WCHAR*, WCHAR*); //wchar = char ? load by name
 	bool Initialize(ID3D11Device*, WCHAR*); //wchar = char ? load by name
 	void Shutdown();
-	ID3D11ShaderResourceView* GetTexture();
+	ID3D11ShaderResourceView** GetTexture();
 
 private:
-	ID3D11ShaderResourceView* m_texture;
+	//연결 리스트로 구현해 보기
+	ID3D11ShaderResourceView* m_texture[2];
 
 };
 

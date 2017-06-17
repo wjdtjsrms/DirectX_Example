@@ -33,7 +33,7 @@ public:
 	bool Initialize(ID3D11Device*, char*, WCHAR*);
 	void Shutdown();
 
-	ID3D11ShaderResourceView* GetTexture();
+	ID3D11ShaderResourceView** GetTexture();
 	void BuildVertexArray(void*, char*, float, float);
 
 private:

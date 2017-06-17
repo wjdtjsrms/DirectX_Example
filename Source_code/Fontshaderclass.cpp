@@ -54,7 +54,7 @@ void Fontshaderclass::Shutdown()
 
 
 bool Fontshaderclass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX& worldMatrix, XMMATRIX& viewMatrix,
-							  XMMATRIX& projectionMatrix ,ID3D11ShaderResourceView* texture,XMVECTOR& pixelColor)
+							  XMMATRIX& projectionMatrix ,ID3D11ShaderResourceView** texture,XMVECTOR& pixelColor)
 {
 	bool result;
 
@@ -318,7 +318,7 @@ void Fontshaderclass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hw
 
 
 bool Fontshaderclass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX& worldMatrix, XMMATRIX& viewMatrix,
-										XMMATRIX& projectionMatrix, ID3D11ShaderResourceView* texture,XMVECTOR& pixelColor)
+										XMMATRIX& projectionMatrix, ID3D11ShaderResourceView** texture,XMVECTOR& pixelColor)
 {
 	HRESULT result;
     D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -356,7 +356,7 @@ bool Fontshaderclass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XM
 	// Finanly set the constant buffer in the vertex shader with the updated values.
     deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 	// Set shader texture resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(0, 1, texture);
 
 	result = deviceContext->Map(m_pixelBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result)){
